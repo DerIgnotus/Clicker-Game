@@ -14,7 +14,7 @@ struct MainCamera;
 
 #[derive(Resource, Default)]
 struct MyWorldCoords {
-    x: f32,
+    x: f32, 
     y: f32,
 }
 
@@ -48,10 +48,14 @@ fn main() {
         ))
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
+        .add_systems(PostStartup, 
+            (
+            post_startup,
+            )
+        )
         .add_systems(Startup, 
             (
                 setup,
-                
             ) 
         )
         .add_systems(Update, 
@@ -140,6 +144,10 @@ fn setup (
     commands.init_resource::<MyWorldCoords>();
     commands.insert_resource::<Money>(Money { amount: 0 });
     commands.insert_resource::<ToggleBool>(ToggleBool { toggle_print: false });
+}
+
+fn post_startup() {
+    println!("\n\n Game Starts, Have Fun!\n");
 }
 
 fn mouse_button_input (
