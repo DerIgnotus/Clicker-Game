@@ -1,0 +1,10 @@
+F:\Github\Clicker-Game\clicker_game\target\debug\deps\bevy_winit-ff135f2ff10fc641.rmeta: C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\lib.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\accessibility.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\converters.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\system.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_config.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_windows.rs
+
+F:\Github\Clicker-Game\clicker_game\target\debug\deps\bevy_winit-ff135f2ff10fc641.d: C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\lib.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\accessibility.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\converters.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\system.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_config.rs C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_windows.rs
+
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\lib.rs:
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\accessibility.rs:
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\converters.rs:
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\system.rs:
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_config.rs:
+C:\Users\Noah\.cargo\registry\src\index.crates.io-6f17d22bba15001f\bevy_winit-0.12.0\src\winit_windows.rs:
