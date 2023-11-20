@@ -7,6 +7,10 @@ use bevy_egui::{EguiContext, EguiPlugin};
 use bevy_inspector_egui::{
     bevy_inspector::hierarchy::SelectedEntities, DefaultInspectorConfigPlugin,
 };
+use bevy::winit::WinitWindows;
+use std::io::Cursor;
+use winit::window::Icon;
+
 
 
 #[derive(Component)]
@@ -56,6 +60,7 @@ fn main() {
         .add_systems(Startup, 
             (
                 setup,
+                set_window_icon,
             ) 
         )
         .add_systems(Update, 
@@ -146,8 +151,26 @@ fn setup (
     commands.insert_resource::<ToggleBool>(ToggleBool { toggle_print: false });
 }
 
-fn post_startup() {
+fn post_startup () {
     println!("\n\n Game Starts, Have Fun!\n");
+}
+
+fn set_window_icon (
+    windows: NonSend<WinitWindows>,
+    primary_window: Query<Entity, With<PrimaryWindow>>,
+) {
+    let primary_entity = primary_window.single();
+    let primary = windows.get_window(primary_entity).unwrap();
+    let icon_buf = Cursor::new(include_bytes!(
+        "icon_256x256.png"
+    ));
+    if let Ok(image) = image::load(icon_buf, image::ImageFormat::Png) {
+        let image = image.into_rgba8();
+        let (width, height) = image.dimensions();
+        let rgba = image.into_raw();
+        let icon = Icon::from_rgba(rgba, width, height).unwrap();
+        primary.set_window_icon(Some(icon));
+    };
 }
 
 fn mouse_button_input (
