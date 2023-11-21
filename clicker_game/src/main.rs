@@ -30,6 +30,25 @@ struct ToggleBool {
     toggle_print: bool,
 }
 
+#[derive(Resource, Default)]
+struct PrintsStruct {
+    prints: Vec<String>,
+    prints_number: usize,
+}
+
+impl PrintsStruct {
+    fn add_print(&mut self, new_print: String) {
+        // Add the new print at the beginning
+        self.prints.insert(0, new_print);
+        self.prints_number += 1;
+
+        // Maintain a maximum of 5 prints
+        if self.prints.len() > 7 {
+            self.prints.truncate(7);
+        }
+    }
+}
+
 fn main() {
     App::new()
         .add_plugins((DefaultPlugins.set(WindowPlugin {
@@ -110,7 +129,25 @@ fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities
 
                 ui.allocate_space(ui.available_size());
             });
+    });
+    egui::TopBottomPanel::bottom("prints")
+    .default_height(150.0)
+    .show(egui_context.get_mut(), |ui| {
+        egui::ScrollArea::vertical().show(ui, |ui| {
+            ui.heading("Prints");
+
+            let print_resource = world.get_resource::<PrintsStruct>().unwrap();
+            let prints_vec = &print_resource.prints;
+            let prints_nums = print_resource.prints_number;
+
+            for (index, print_text) in prints_vec.iter().enumerate().rev() {
+                let print_number = prints_nums - index;// Calculate the correct print number
+                ui.label(format!("print ({}): {}", print_number, print_text));
+            }
+
+            ui.allocate_space(ui.available_size());
         });
+    });
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
@@ -124,6 +161,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
     commands.init_resource::<MyWorldCoords>();
     commands.insert_resource::<Money>(Money { amount: 0 });
+    commands.init_resource::<PrintsStruct>();
     commands.insert_resource::<ToggleBool>(ToggleBool {
         toggle_print: false,
     });
@@ -154,11 +192,14 @@ fn mouse_button_input(
     mycoords: Res<MyWorldCoords>,
     toggle_bool: Res<ToggleBool>,
     mut money: ResMut<Money>,
+    mut print: ResMut<PrintsStruct>,
 ) {
     if buttons.just_pressed(MouseButton::Left) {
         println!("MouseButtonWasPressed");
         if cursor_in_clicker(&mycoords, &toggle_bool) {
             money.amount += 10;
+            let money_string = format!("Money: {}", money.amount);
+            print.add_print(money_string);
             println!("Money: {}", money.amount);
         }
     }
