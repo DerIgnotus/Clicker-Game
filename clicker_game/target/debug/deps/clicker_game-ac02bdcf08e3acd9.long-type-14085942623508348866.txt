@@ -1,0 +1,1 @@
+for<'a, 'b, 'c> fn(bevy::prelude::NonSend<'a, WinitWindows>, bevy::prelude::Query<'b, 'c, bevy::prelude::Entity, bevy::prelude::With<PrimaryWindow>>) {app_setup::set_window_icon}

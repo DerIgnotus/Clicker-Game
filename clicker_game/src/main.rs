@@ -11,6 +11,8 @@ use bevy_inspector_egui::{
 use std::io::Cursor;
 use winit::window::Icon;
 
+mod app_setup;
+
 #[derive(Component)]
 struct MainCamera;
 
@@ -49,7 +51,7 @@ impl PrintsStruct {
     }
 }
 
-fn main() {
+fn main () {
     App::new()
         .add_plugins((DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
@@ -114,6 +116,7 @@ fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities
                     toggle_print = !toggle_print;
                     toggle_resource.toggle_print = toggle_print;
                     println!("Toggle Print: {}", toggle_print);
+                    
                 }
 
                 match selected_entities.as_slice() {
@@ -167,8 +170,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
 }
 
-fn post_startup() {
+fn post_startup(mut print: ResMut<PrintsStruct>) {
     println!("\n\n Game Starts, Have Fun!\n");
+    print.add_print("Game Starts, Have Fun!".to_string());
 }
 
 fn set_window_icon(
@@ -208,6 +212,7 @@ fn mouse_button_input(
 fn cursor_in_clicker(mycoords: &MyWorldCoords, toggle_bool: &ToggleBool) -> bool {
     if toggle_bool.toggle_print {
         eprintln!("Cursor X: {}\nCursor Y: {}", mycoords.x, mycoords.y);
+
     }
     (mycoords.x <= 100.0 && mycoords.x >= -100.0) && (mycoords.y <= 100.0 && mycoords.y >= -100.0)
 }
