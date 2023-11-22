@@ -52,8 +52,8 @@ impl PrintsStruct {
 }
 
 fn main () {
-    App::new()
-        .add_plugins((DefaultPlugins.set(WindowPlugin {
+    App::new ()
+        .add_plugins ((DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
                 title: "Clicker Game Version 1.0!".into(),
                 position: WindowPosition::At(IVec2 { x: (360), y: (140) }), //Here you can change it
@@ -81,12 +81,12 @@ fn main () {
         .run();
 }
 
-fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities>) {
+fn inspector_ui (world: &mut World, mut selected_entities: Local<SelectedEntities>) {
     let mut egui_context = world
         .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
         .single(world)
         .clone();
-    egui::SidePanel::left("hierarchy")
+    egui::SidePanel::left ("hierarchy")
         .default_width(200.0)
         .show(egui_context.get_mut(), |ui| {
             egui::ScrollArea::vertical().show(ui, |ui| {
@@ -103,7 +103,7 @@ fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities
             });
         });
 
-    egui::SidePanel::right("inspector")
+    egui::SidePanel::right ("inspector")
         .default_width(250.0)
         .show(egui_context.get_mut(), |ui| {
             egui::ScrollArea::vertical().show(ui, |ui| {
@@ -133,7 +133,7 @@ fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities
                 ui.allocate_space(ui.available_size());
             });
     });
-    egui::TopBottomPanel::bottom("prints")
+    egui::TopBottomPanel::bottom ("prints")
     .default_height(150.0)
     .show(egui_context.get_mut(), |ui| {
         egui::ScrollArea::vertical().show(ui, |ui| {
@@ -153,7 +153,7 @@ fn inspector_ui(world: &mut World, mut selected_entities: Local<SelectedEntities
     });
 }
 
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
+fn setup (mut commands: Commands, asset_server: Res<AssetServer>) {
     let texture = asset_server.load("Clicker.png");
     commands.spawn((Camera2dBundle { ..default() }, MainCamera));
 
@@ -170,12 +170,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     });
 }
 
-fn post_startup(mut print: ResMut<PrintsStruct>) {
+fn post_startup (mut print: ResMut<PrintsStruct>) {
     println!("\n\n Game Starts, Have Fun!\n");
     print.add_print("Game Starts, Have Fun!".to_string());
 }
 
-fn set_window_icon(
+fn set_window_icon (
     windows: NonSend<WinitWindows>,
     primary_window: Query<Entity, With<PrimaryWindow>>,
 ) {
@@ -191,14 +191,14 @@ fn set_window_icon(
     };
 }
 
-fn mouse_button_input(
+fn mouse_button_input (
     buttons: Res<Input<MouseButton>>,
     mycoords: Res<MyWorldCoords>,
     toggle_bool: Res<ToggleBool>,
     mut money: ResMut<Money>,
     mut print: ResMut<PrintsStruct>,
 ) {
-    if buttons.just_pressed(MouseButton::Left) {
+    if buttons.just_pressed (MouseButton::Left) {
         println!("MouseButtonWasPressed");
         if cursor_in_clicker(&mycoords, &toggle_bool) {
             money.amount += 10;
@@ -209,7 +209,7 @@ fn mouse_button_input(
     }
 }
 
-fn cursor_in_clicker(mycoords: &MyWorldCoords, toggle_bool: &ToggleBool) -> bool {
+fn cursor_in_clicker (mycoords: &MyWorldCoords, toggle_bool: &ToggleBool) -> bool {
     if toggle_bool.toggle_print {
         eprintln!("Cursor X: {}\nCursor Y: {}", mycoords.x, mycoords.y);
 
@@ -217,7 +217,7 @@ fn cursor_in_clicker(mycoords: &MyWorldCoords, toggle_bool: &ToggleBool) -> bool
     (mycoords.x <= 100.0 && mycoords.x >= -100.0) && (mycoords.y <= 100.0 && mycoords.y >= -100.0)
 }
 
-fn my_cursor_system(
+fn my_cursor_system (
     mut mycoords: ResMut<MyWorldCoords>,
     q_window: Query<&Window, With<PrimaryWindow>>,
     q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
