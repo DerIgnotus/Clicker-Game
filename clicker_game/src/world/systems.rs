@@ -4,9 +4,10 @@ use bevy::window::PrimaryWindow;
 
 use crate::world::resources::*;
 use crate::ui::resources::*;
+use crate::cookie::components::*;
 
 
-pub fn cursor_in_clicker(
+pub fn cursor_in_clicker (
     mycoords: &MyWorldCoords,
     toggle_bool: &ToggleBool,
     print: &mut PrintsStruct,
@@ -38,16 +39,18 @@ pub fn my_cursor_system (
 }
 
 
-pub fn mouse_button_input(
+pub fn mouse_button_input (
     buttons: Res<Input<MouseButton>>,
     mycoords: Res<MyWorldCoords>,
     toggle_bool: Res<ToggleBool>,
     mut money: ResMut<Money>,
     mut print: ResMut<PrintsStruct>,
+    cookie_q: Query<&Cookie, With<Cookie>>,
 ) {
+    let cookie = cookie_q.single();
     if buttons.just_pressed(MouseButton::Left) {
         if cursor_in_clicker(&mycoords, &toggle_bool, &mut print) {
-            money.amount += 10;
+            money.amount += cookie.give_amount;
             let money_string = format!("Money: {}", money.amount);
             print.add_print(money_string);
             println!("Money: {}", money.amount);

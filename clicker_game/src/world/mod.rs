@@ -13,9 +13,9 @@ impl Plugin for WorldPlugin {
     fn build(&self, app: &mut App) {
         app.init_resource::<MyWorldCoords>()
         .init_resource::<Money>()
-        .add_systems(Update, (
+        .add_systems(Update,(
             mouse_button_input,
-            my_cursor_system
+            my_cursor_system,
         ));
     }
 }

@@ -1,0 +1,1 @@
+for<'a, 'b, 'c, 'd, 'e, 'f> fn(bevy::prelude::Res<'a, bevy::prelude::Input<bevy::prelude::MouseButton>>, bevy::prelude::Query<'b, 'c, (bevy::prelude::Entity, &'d cookie::components::Cookie, &'e bevy::prelude::Transform), bevy::prelude::With<{type error}>>, bevy::prelude::ResMut<'f, world::resources::Money>) {world::systems::click_detection}
