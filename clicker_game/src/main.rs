@@ -5,6 +5,7 @@ use bevy::{
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
+use cookie::CookiePlugin;
 use ui::UiPlugin;
 use world::WorldPlugin; 
 
@@ -33,6 +34,7 @@ fn main () {
         .add_plugins(DefaultInspectorConfigPlugin)
         .add_plugins(UiPlugin)
         .add_plugins(WorldPlugin)
+        .add_plugins(CookiePlugin)
         .add_systems(PostStartup, post_startup)
         .add_systems(Startup, setup)
         .run();
@@ -40,15 +42,8 @@ fn main () {
 
 
 
-fn setup (mut commands: Commands, asset_server: Res<AssetServer>) {
-    println!("Test");
-    let texture = asset_server.load("Clicker.png");
+fn setup (mut commands: Commands) {
     commands.spawn(Camera2dBundle { ..default() });
-
-    commands.spawn((SpriteBundle {
-        texture,
-        ..default()
-    },));
 }
 
 fn post_startup (mut print: ResMut<PrintsStruct>) {
