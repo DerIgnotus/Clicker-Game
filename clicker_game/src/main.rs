@@ -1,55 +1,18 @@
-use bevy::winit::WinitWindows;
 use bevy::{
-    input::common_conditions::input_toggle_active,
     prelude::*,
-    window::{PresentMode, PrimaryWindow, WindowTheme},
+    window::{PresentMode, WindowTheme}, 
 };
-use bevy_egui::{EguiContext, EguiPlugin};
-use bevy_inspector_egui::{
-    bevy_inspector::hierarchy::SelectedEntities, DefaultInspectorConfigPlugin,
-};
-use std::io::Cursor;
-use winit::window::Icon;
+use bevy_egui::EguiPlugin;
+use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
-mod app_setup;
+use ui::UiPlugin;
+use world::WorldPlugin; 
 
-#[derive(Component)]
-struct MainCamera;
+pub mod ui;
+pub mod cookie;
+pub mod world;
 
-#[derive(Resource, Default)]
-struct MyWorldCoords {
-    x: f32,
-    y: f32,
-}
-
-#[derive(Resource, Default)]
-struct Money {
-    amount: u32,
-}
-
-#[derive(Resource)]
-struct ToggleBool {
-    toggle_print: bool,
-}
-
-#[derive(Resource, Default)]
-struct PrintsStruct {
-    prints: Vec<String>,
-    prints_number: usize,
-}
-
-impl PrintsStruct {
-    fn add_print(&mut self, new_print: String) {
-        // Add the new print at the beginning
-        self.prints.insert(0, new_print);
-        self.prints_number += 1;
-
-        // Maintain a maximum of 5 prints
-        if self.prints.len() > 7 {
-            self.prints.truncate(7);
-        }
-    }
-}
+use crate::ui::resources::*;
 
 fn main () {
     App::new ()
@@ -68,170 +31,30 @@ fn main () {
         }),))
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
-        .add_systems(PostStartup, (post_startup,))
-        .add_systems(Startup, (setup, set_window_icon))
-        .add_systems(
-            Update,
-            (
-                mouse_button_input,
-                my_cursor_system,
-                inspector_ui.run_if(input_toggle_active(true, KeyCode::Escape)),
-            ),
-        )
+        .add_plugins(UiPlugin)
+        .add_plugins(WorldPlugin)
+        .add_systems(PostStartup, post_startup)
+        .add_systems(Startup, setup)
         .run();
 }
 
-fn inspector_ui (world: &mut World, mut selected_entities: Local<SelectedEntities>) {
-    let mut egui_context = world
-        .query_filtered::<&mut EguiContext, With<PrimaryWindow>>()
-        .single(world)
-        .clone();
-    egui::SidePanel::left ("hierarchy")
-        .default_width(200.0)
-        .show(egui_context.get_mut(), |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
-                ui.heading("Hierarchy");
 
-                bevy_inspector_egui::bevy_inspector::hierarchy::hierarchy_ui(
-                    world,
-                    ui,
-                    &mut selected_entities,
-                );
-
-                ui.label("Press escape to toggle UI");
-                ui.allocate_space(ui.available_size());
-            });
-        });
-
-    egui::SidePanel::right ("inspector")
-        .default_width(250.0)
-        .show(egui_context.get_mut(), |ui| {
-            egui::ScrollArea::vertical().show(ui, |ui| {
-                ui.heading("Inspector");
-
-                let mut toggle_resource = world.get_resource_mut::<ToggleBool>().unwrap();
-                let mut toggle_print = toggle_resource.toggle_print;
-
-                if ui.button("Toggle Print").clicked() {
-                    toggle_print = !toggle_print;
-                    toggle_resource.toggle_print = toggle_print;
-                    println!("Toggle Print: {}", toggle_print);
-                    
-                }
-
-                match selected_entities.as_slice() {
-                    &[entity] => {
-                        bevy_inspector_egui::bevy_inspector::ui_for_entity(world, entity, ui);
-                    }
-                    entities => {
-                        bevy_inspector_egui::bevy_inspector::ui_for_entities_shared_components(
-                            world, entities, ui,
-                        );
-                    }
-                }
-
-                ui.allocate_space(ui.available_size());
-            });
-    });
-    egui::TopBottomPanel::bottom ("prints")
-    .default_height(150.0)
-    .show(egui_context.get_mut(), |ui| {
-        egui::ScrollArea::vertical().show(ui, |ui| {
-            ui.heading("Prints");
-
-            let print_resource = world.get_resource::<PrintsStruct>().unwrap();
-            let prints_vec = &print_resource.prints;
-            let prints_nums = print_resource.prints_number;
-
-            for (index, print_text) in prints_vec.iter().enumerate().rev() {
-                let print_number = prints_nums - index;// Calculate the correct print number
-                ui.label(format!("print ({}): {}", print_number, print_text));
-            }
-
-            ui.allocate_space(ui.available_size());
-        });
-    });
-}
 
 fn setup (mut commands: Commands, asset_server: Res<AssetServer>) {
+    println!("Test");
     let texture = asset_server.load("Clicker.png");
-    commands.spawn((Camera2dBundle { ..default() }, MainCamera));
+    commands.spawn(Camera2dBundle { ..default() });
 
     commands.spawn((SpriteBundle {
         texture,
         ..default()
     },));
-
-    commands.init_resource::<MyWorldCoords>();
-    commands.insert_resource::<Money>(Money { amount: 0 });
-    commands.init_resource::<PrintsStruct>();
-    commands.insert_resource::<ToggleBool>(ToggleBool {
-        toggle_print: false,
-    });
 }
 
 fn post_startup (mut print: ResMut<PrintsStruct>) {
     println!("\n\n Game Starts, Have Fun!\n");
     print.add_print("Game Starts, Have Fun!".to_string());
-}
+} 
 
-fn set_window_icon (
-    windows: NonSend<WinitWindows>,
-    primary_window: Query<Entity, With<PrimaryWindow>>,
-) {
-    let primary_entity = primary_window.single();
-    let primary = windows.get_window(primary_entity).unwrap();
-    let icon_buf = Cursor::new(include_bytes!("../Assets/icon_256x256.png"));
-    if let Ok(image) = image::load(icon_buf, image::ImageFormat::Png) {
-        let image = image.into_rgba8();
-        let (width, height) = image.dimensions();
-        let rgba = image.into_raw();
-        let icon = Icon::from_rgba(rgba, width, height).unwrap();
-        primary.set_window_icon(Some(icon));
-    };
-}
 
-fn mouse_button_input (
-    buttons: Res<Input<MouseButton>>,
-    mycoords: Res<MyWorldCoords>,
-    toggle_bool: Res<ToggleBool>,
-    mut money: ResMut<Money>,
-    mut print: ResMut<PrintsStruct>,
-) {
-    if buttons.just_pressed (MouseButton::Left) {
-        println!("MouseButtonWasPressed");
-        if cursor_in_clicker(&mycoords, &toggle_bool) {
-            money.amount += 10;
-            let money_string = format!("Money: {}", money.amount);
-            print.add_print(money_string);
-            println!("Money: {}", money.amount);
-        }
-    }
-}
 
-fn cursor_in_clicker (mycoords: &MyWorldCoords, toggle_bool: &ToggleBool) -> bool {
-    if toggle_bool.toggle_print {
-        eprintln!("Cursor X: {}\nCursor Y: {}", mycoords.x, mycoords.y);
-
-    }
-    (mycoords.x <= 100.0 && mycoords.x >= -100.0) && (mycoords.y <= 100.0 && mycoords.y >= -100.0)
-}
-
-fn my_cursor_system (
-    mut mycoords: ResMut<MyWorldCoords>,
-    q_window: Query<&Window, With<PrimaryWindow>>,
-    q_camera: Query<(&Camera, &GlobalTransform), With<MainCamera>>,
-) {
-    let (camera, camera_transform) = q_camera.single();
-    let window = q_window.single();
-
-    if let Some(world_position) = window
-        .cursor_position()
-        .and_then(|cursor| camera.viewport_to_world(camera_transform, cursor))
-        .map(|ray| ray.origin.truncate())
-    {
-        mycoords.x = world_position.x;
-        mycoords.y = world_position.y;
-        //eprintln!("World coords: {}/{}", world_position.x, world_position.y);
-    }
-}

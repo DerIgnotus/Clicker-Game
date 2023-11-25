@@ -1,0 +1,1 @@
+for<'a, 'b, 'c> fn(&'a mut bevy::prelude::World, bevy::prelude::Local<'b, SelectedEntities>, bevy::prelude::ResMut<'c, ui::resources::PrintsStruct>, {type error}) {ui::systems::inspector_ui}
