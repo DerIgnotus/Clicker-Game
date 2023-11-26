@@ -5,15 +5,15 @@ use bevy::{
 use bevy_egui::EguiPlugin;
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 
-use cookie::CookiePlugin;
-use ui::UiPlugin;
-use world::WorldPlugin; 
+pub mod game;
+pub mod main_menu;
+pub mod debug_menu;
 
-pub mod ui;
-pub mod cookie;
-pub mod world;
+use game::GamePlugin;
+use main_menu::MainMenuPlugin;
+use debug_menu::DebugUiPlugin;
 
-use crate::ui::resources::*;
+use debug_menu::resources::PrintsStruct;
 
 fn main () {
     App::new ()
@@ -32,9 +32,10 @@ fn main () {
         }),))
         .add_plugins(EguiPlugin)
         .add_plugins(DefaultInspectorConfigPlugin)
-        .add_plugins(UiPlugin)
-        .add_plugins(WorldPlugin)
-        .add_plugins(CookiePlugin)
+        .add_state::<AppState>()
+        .add_plugins(MainMenuPlugin)
+        .add_plugins(DebugUiPlugin)
+        .add_plugins(GamePlugin)
         .add_systems(PostStartup, post_startup)
         .add_systems(Startup, setup)
         .run();
@@ -51,5 +52,11 @@ fn post_startup (mut print: ResMut<PrintsStruct>) {
     print.add_print("Game Starts, Have Fun!".to_string());
 } 
 
+#[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
+pub enum AppState {
+    #[default]
+    MainMenu,
+    Game,
+}
 
 
