@@ -54,32 +54,38 @@ fn setup (mut commands: Commands) {
 fn post_startup (mut print: ResMut<PrintsStruct>) {
     println!("\n\n Game Starts, Have Fun!\n");
     print.add_print("Game Starts, Have Fun!".to_string());
+    println!("You are in the Main Menu and the Game is Paused!");
+    print.add_print("You are in the Main Menu and the Game is Paused!".to_string());
 } 
 
 pub fn transition_to_game_state (
-    mut commands: Commands,
     keyboard_input: Res<Input<KeyCode>>,
     app_state: Res<State<AppState>>,
+    mut next_app_state: ResMut<NextState<AppState>>,
+    mut print: ResMut<PrintsStruct>,
 ) {
     let a_state = app_state.get();
     if keyboard_input.just_pressed(KeyCode::G) {
         if a_state != &AppState::Game {
-            commands.insert_resource(NextState(Some(AppState::Game)));
-            println!("Entered Game");
+            next_app_state.set(AppState::Game);
+            println!("Entered Game!");
+            print.add_print("Entered Game!".to_string());
         }
     }
 }
 
 pub fn transition_to_main_menu_state (
-    mut commands: Commands,
     keyboard_input: Res<Input<KeyCode>>,
     app_state: Res<State<AppState>>,
+    mut next_app_state: ResMut<NextState<AppState>>,
+    mut print: ResMut<PrintsStruct>,
 ) {
     let a_state = app_state.get();
     if keyboard_input.just_pressed(KeyCode::M) {
         if a_state != &AppState::MainMenu {
-            commands.insert_resource(NextState(Some(AppState::MainMenu)));
-            println!("Entered MainMenu");
+            next_app_state.set(AppState::MainMenu);
+            println!("Entered MainMenu!");
+            print.add_print("Entered MainMenu!".to_string());
         }
     }
 }

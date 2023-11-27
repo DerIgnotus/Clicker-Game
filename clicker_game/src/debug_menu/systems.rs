@@ -62,11 +62,11 @@ pub fn inspector_ui (world: &mut World, mut selected_entities: Local<SelectedEnt
                 ui.allocate_space(ui.available_size());
             });
     });
-    egui::TopBottomPanel::bottom ("prints")
+    egui::TopBottomPanel::bottom ("prints and inputs")
     .default_height(150.0)
     .show(egui_context.get_mut(), |ui| {
         egui::ScrollArea::vertical().show(ui, |ui| {
-            ui.heading("Prints");
+            ui.heading("Prints and Inputs");
 
             let print_resource = world.get_resource::<PrintsStruct>().unwrap();
             let prints_vec = &print_resource.prints;
