@@ -5,10 +5,12 @@ mod systems;
 
 use systems::*;
 
+use crate::AppState;
+
 pub struct CookiePlugin;
 
 impl Plugin for CookiePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, spawn_cookies);
+        app.add_systems(OnEnter(AppState::Game), spawn_cookies);
     }
 }

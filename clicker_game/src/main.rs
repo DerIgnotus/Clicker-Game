@@ -38,6 +38,10 @@ fn main () {
         .add_plugins(GamePlugin)
         .add_systems(PostStartup, post_startup)
         .add_systems(Startup, setup)
+        .add_systems(Update, (
+            transition_to_game_state,
+            transition_to_main_menu_state,
+        ))
         .run();
 }
 
@@ -51,6 +55,35 @@ fn post_startup (mut print: ResMut<PrintsStruct>) {
     println!("\n\n Game Starts, Have Fun!\n");
     print.add_print("Game Starts, Have Fun!".to_string());
 } 
+
+pub fn transition_to_game_state (
+    mut commands: Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    app_state: Res<State<AppState>>,
+) {
+    let a_state = app_state.get();
+    if keyboard_input.just_pressed(KeyCode::G) {
+        if a_state != &AppState::Game {
+            commands.insert_resource(NextState(Some(AppState::Game)));
+            println!("Entered Game");
+        }
+    }
+}
+
+pub fn transition_to_main_menu_state (
+    mut commands: Commands,
+    keyboard_input: Res<Input<KeyCode>>,
+    app_state: Res<State<AppState>>,
+) {
+    let a_state = app_state.get();
+    if keyboard_input.just_pressed(KeyCode::M) {
+        if a_state != &AppState::MainMenu {
+            commands.insert_resource(NextState(Some(AppState::MainMenu)));
+            println!("Entered MainMenu");
+        }
+    }
+}
+
 
 #[derive(States, Debug, Clone, Copy, Eq, PartialEq, Hash, Default)]
 pub enum AppState {
