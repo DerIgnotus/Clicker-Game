@@ -14,6 +14,6 @@ impl Plugin for DebugUiPlugin {
         app.init_resource::<PrintsStruct>()
         .init_resource::<ToggleBool>()
         .add_systems(Startup, set_window_icon)
-        .add_systems(Update, inspector_ui.run_if(input_toggle_active(true, KeyCode::Escape)));
+        .add_systems(Update, inspector_ui.run_if(input_toggle_active(false, KeyCode::Escape)));
     }
 }

@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        ".\\clicker_game\\Cargo.toml"
+    ]
+}
